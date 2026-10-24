@@ -1,8 +1,14 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\TokenController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::prefix('v1')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::post('/login', [TokenController::class, 'store'])->name('auth.store');
+    });
+
+    // Route::middleware('auth:sanctum')->group(function() {
+    //     Route::post()
+    // });
+});
