@@ -4,55 +4,31 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class TokenController extends Controller
 {
-    public function store(LoginRequest $request): JsonResponse
+    public function store(LoginRequest $request)
     {
         $credentials = $request->validated();
 
         if (! Auth::attempt($credentials)) {
-            return new JsonResponse([
-                'data' => [
-                    'type' => 'error',
-                    'attributes' => [
-                        'success' => false,
-                        'message' => 'Credenciais inválidas.',
-                    ],
-                ],
-            ], Response::HTTP_UNAUTHORIZED);
+            return response(null, Response::HTTP_UNAUTHORIZED);
         }
 
         $token = Auth::user()->createToken('auth', expiresAt: now()->addWeek())->plainTextToken;
 
-        return new JsonResponse([
-            'data' => [
-                'type' => 'login',
-                'attributes' => [
-                    'success' => true,
-                    'message' => 'Logado com sucesso.',
-                    'token' => $token,
-                ],
-            ],
-        ], Response::HTTP_CREATED);
+        return response([
+            'data' => ['token' => $token],
+        ], Response::HTTP_OK);
     }
 
-    public function destroy(Request $request): JsonResponse
+    public function destroy(Request $request)
     {
         $request->user()->tokens()->delete();
 
-        return new JsonResponse([
-            'data' => [
-                'type' => 'logout',
-                'attributes' => [
-                    'success' => true,
-                    'message' => 'Tokens revogados com sucesso.',
-                ],
-            ],
-        ], Response::HTTP_OK);
+        return response(null, Response::HTTP_OK);
     }
 }
