@@ -26,7 +26,7 @@ class StoreEmployeeRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'birth_date' => [
-                'nullable',
+                'required',
                 Rule::date()
                     ->format('Y-m-d')
                     ->before(today())

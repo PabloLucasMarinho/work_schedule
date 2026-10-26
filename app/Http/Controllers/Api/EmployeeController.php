@@ -7,8 +7,9 @@ use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Http\Resources\EmployeeResource;
 use App\Models\Employee;
-use Auth;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class EmployeeController extends Controller
 {
@@ -17,16 +18,12 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $user = Employee::where('user_id', Auth::id())->firstOrFail();
-
         $employees = Employee::query()
             ->with(['user'])
-            ->where('user_id', $user->id)
+            ->where('user_id', Auth::id())
             ->get();
 
-        return EmployeeResource::collection($employees)
-            ->response()
-            ->setStatusCode(Response::HTTP_OK);
+        return EmployeeResource::collection($employees);
     }
 
     /**
@@ -34,12 +31,12 @@ class EmployeeController extends Controller
      */
     public function store(StoreEmployeeRequest $request)
     {
-        $employee = Employee::create([
+        Employee::create([
             ...$request->validated(),
             'user_id' => $request->user()->id,
         ]);
 
-        return response()->noContent(Response::HTTP_CREATED);
+        return response(null, Response::HTTP_CREATED);
     }
 
     /**
@@ -47,15 +44,9 @@ class EmployeeController extends Controller
      */
     public function show(Employee $employee)
     {
-        //
-    }
+        Gate::authorize('view', $employee);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Employee $employee)
-    {
-        //
+        return new EmployeeResource($employee);
     }
 
     /**
@@ -63,7 +54,11 @@ class EmployeeController extends Controller
      */
     public function update(UpdateEmployeeRequest $request, Employee $employee)
     {
-        //
+        Gate::authorize('update', $employee);
+
+        $employee->update($request->validated());
+
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -71,6 +66,10 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        //
+        Gate::authorize('delete', $employee);
+
+        $employee->delete();
+
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }

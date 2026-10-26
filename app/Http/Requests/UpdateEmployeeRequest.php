@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateEmployeeRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class UpdateEmployeeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +24,14 @@ class UpdateEmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
+            'birth_date' => [
+                'required',
+                Rule::date()
+                    ->format('Y-m-d')
+                    ->before(today())
+                    ->after(today()->subYears(120)),
+            ],
         ];
     }
 }
