@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,7 +31,7 @@ class TokenController extends Controller
 
         return new JsonResponse([
             'data' => [
-                'type' => 'token',
+                'type' => 'login',
                 'attributes' => [
                     'success' => true,
                     'message' => 'Logado com sucesso.',
@@ -38,5 +39,20 @@ class TokenController extends Controller
                 ],
             ],
         ], Response::HTTP_CREATED);
+    }
+
+    public function destroy(Request $request): JsonResponse
+    {
+        $request->user()->tokens()->delete();
+
+        return new JsonResponse([
+            'data' => [
+                'type' => 'logout',
+                'attributes' => [
+                    'success' => true,
+                    'message' => 'Tokens revogados com sucesso.',
+                ],
+            ],
+        ], Response::HTTP_OK);
     }
 }

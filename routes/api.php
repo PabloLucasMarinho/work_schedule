@@ -8,7 +8,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/login', [TokenController::class, 'store'])->name('auth.store');
     });
 
-    // Route::middleware('auth:sanctum')->group(function() {
-    //     Route::post()
-    // });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [TokenController::class, 'destroy'])->name('auth.destroy');
+    });
 });
