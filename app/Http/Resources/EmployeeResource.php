@@ -18,7 +18,7 @@ class EmployeeResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'name' => $this->name,
-            'birth_date' => $this->birth_date?->format('Y-m-d'),
+            'birth_date' => $this->birth_date->format('Y-m-d'),
         ];
     }
 }
