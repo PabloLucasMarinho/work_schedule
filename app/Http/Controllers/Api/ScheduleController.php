@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreScheduleRequest;
 use App\Http\Requests\UpdateScheduleRequest;
 use App\Http\Resources\ScheduleResource;
+use App\Models\Employee;
 use App\Models\Schedule;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +17,16 @@ class ScheduleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(?Employee $employee = null)
     {
+        if ($employee) {
+            Gate::authorize('view', $employee);
+        }
+
         $schedule = Schedule::query()
             ->with(['employee'])
-            ->whereHas(
-                'employee',
-                fn ($query) => $query->where('user_id', Auth::id())
-            )
+            ->whereHas('employee', fn ($query) => $query->where('user_id', Auth::id()))
+            ->when($employee, fn ($query) => $query->where('employee_id', $employee->id))
             ->get();
 
         return ScheduleResource::collection($schedule);
@@ -32,12 +35,11 @@ class ScheduleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreScheduleRequest $request)
+    public function store(StoreScheduleRequest $request, Employee $employee)
     {
-        Schedule::create([
-            ...$request->validated(),
-            'user_id' => $request->user()->id,
-        ]);
+        Gate::authorize('view', $employee);
+
+        $employee->schedules()->create($request->validated());
 
         return response(null, Response::HTTP_CREATED);
     }

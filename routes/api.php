@@ -13,8 +13,9 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [TokenController::class, 'destroy'])->name('auth.destroy');
 
-        Route::apiResource('employee', EmployeeController::class);
+        Route::apiResource('employees', EmployeeController::class);
 
-        Route::apiResource('schedule', ScheduleController::class);
+        Route::apiResource('employees.schedules', ScheduleController::class)->shallow();
+        Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
     });
 });
