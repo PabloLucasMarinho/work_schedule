@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Enums\Frequency;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class UpdateScheduleRequest extends FormRequest
@@ -37,6 +38,10 @@ class UpdateScheduleRequest extends FormRequest
                     ->afterOrEqual('starts_at'),
             ],
             'frequency' => ['required', Rule::enum(Frequency::class)],
+            'employee_id' => [
+                'required',
+                Rule::exists('employees', 'id')->where('user_id', Auth::id()),
+            ],
         ];
     }
 }

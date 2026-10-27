@@ -14,6 +14,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/logout', [TokenController::class, 'destroy'])->name('auth.destroy');
 
         Route::apiResource('employee', EmployeeController::class);
+
         Route::apiResource('schedule', ScheduleController::class);
     });
 });

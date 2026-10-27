@@ -20,7 +20,7 @@ class SchedulePolicy
      */
     public function view(User $user, Schedule $schedule): bool
     {
-        return $schedule->user_id === $user->id;
+        return $schedule->employee->user_id === $user->id;
     }
 
     /**
@@ -36,7 +36,7 @@ class SchedulePolicy
      */
     public function update(User $user, Schedule $schedule): bool
     {
-        return $schedule->user_id === $user->id;
+        return $schedule->employee->user_id === $user->id;
     }
 
     /**
@@ -44,7 +44,7 @@ class SchedulePolicy
      */
     public function delete(User $user, Schedule $schedule): bool
     {
-        return $schedule->user_id === $user->id;
+        return $schedule->employee->user_id === $user->id;
     }
 
     /**

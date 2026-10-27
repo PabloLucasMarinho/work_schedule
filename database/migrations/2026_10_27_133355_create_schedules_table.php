@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Models\Employee;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Employee::class)->constrained()->cascadeOnDelete();
             $table->dateTime('starts_at');
             $table->dateTime('ends_at');
-            $table->string('frequency')->default('daily');
+            $table->string('frequency');
             $table->timestamps();
         });
     }

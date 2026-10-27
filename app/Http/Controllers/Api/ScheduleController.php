@@ -19,8 +19,11 @@ class ScheduleController extends Controller
     public function index()
     {
         $schedule = Schedule::query()
-            ->with(['user'])
-            ->where('user_id', Auth::id())
+            ->with(['employee'])
+            ->whereHas(
+                'employee',
+                fn ($query) => $query->where('user_id', Auth::id())
+            )
             ->get();
 
         return ScheduleResource::collection($schedule);

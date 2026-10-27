@@ -19,6 +19,7 @@ class EmployeeResource extends JsonResource
             'user_id' => $this->user_id,
             'name' => $this->name,
             'birth_date' => $this->birth_date->format('Y-m-d'),
+            'schedules' => ScheduleResource::collection($this->whenLoaded('schedules')),
         ];
     }
 }

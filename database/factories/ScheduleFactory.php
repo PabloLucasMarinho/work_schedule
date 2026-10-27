@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\Frequency;
+use App\Models\Employee;
 use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,7 +22,7 @@ class ScheduleFactory extends Factory
         $startsAt = now();
 
         return [
-            'user_id' => 1,
+            'employee_id' => Employee::factory(),
             'starts_at' => $startsAt,
             'ends_at' => $startsAt->copy()->addDays(fake()->numberBetween(1, 365)),
             'frequency' => fake()->randomElement(Frequency::cases()),

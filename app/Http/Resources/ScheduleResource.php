@@ -16,10 +16,10 @@ class ScheduleResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
             'starts_at' => $this->starts_at->format('Y-m-d H:i:s'),
             'ends_at' => $this->ends_at->format('Y-m-d H:i:s'),
             'frequency' => $this->frequency,
+            'employee' => new EmployeeResource($this->whenLoaded('employee')),
         ];
     }
 }
